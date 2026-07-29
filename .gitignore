@@ -8,4 +8,4 @@ __pycache__/
 trust.json
 run-history.jsonl
 node_modules
-
+logs/
