@@ -25,7 +25,8 @@
       "*": "ask",
       "~/.pi/agent/*": "allow",
       "~/.agents/*": "allow",
-      "**/node_modules/@earendil-works/*": "allow"
+      "**/node_modules/@earendil-works/*": "allow",
+      "/tmp/*": "allow"
     }
   }
 }

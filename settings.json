@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.82.1",
+  "lastChangelogVersion": "0.83.0",
   "theme": "dark",
   "defaultProvider": "xiaomi-token-plan-cn",
   "defaultModel": "mimo-v2.5-pro",
@@ -9,7 +9,9 @@
     "npm:pi-subagents",
     "npm:pi-lens",
     "npm:@gotgenes/pi-permission-system",
-    "npm:pi-mcp-adapter"
+    "npm:pi-mcp-adapter",
+    "npm:pi-rewind",
+    "npm:pi-gen-license"
   ],
   "defaultThinkingLevel": "high",
   "clearOnStart": true,
@@ -20,5 +22,12 @@
     "grad": true
   },
   "rsl": true,
-  "quietStartup": true
+  "quietStartup": true,
+  "subagents": {
+    "agentOverrides": {
+      "researcher": {
+        "thinking": "high"
+      }
+    }
+  }
 }
