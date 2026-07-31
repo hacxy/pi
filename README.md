@@ -43,6 +43,8 @@ My personal [Pi](https://pi.dev) coding agent configuration — includes custom 
 | ------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | [pi-cc-header](extensions/pi-cc-header)                 | Animated startup header with pixel Pi logo, 9-color palette, gradient themes  |
 | [pi-permission-system](extensions/pi-permission-system) | Configurable permission rules for bash, file access, and external directories |
+| [release-npm](extensions/release-npm)                   | NPM package release automation                                                |
+| [template-manager](extensions/template-manager)         | Project template management and scaffolding                                    |
 
 ### Packages
 
@@ -52,18 +54,20 @@ Configured in `settings.json`:
 | -------------------------------- | -------------------------------------------------- |
 | `@hacxy/skills`                  | Custom skill collection                            |
 | `pi-web-access`                  | Web fetching, PDF extraction, HTML-to-markdown     |
-| `pi-subagents`                   | Multi-agent orchestration (parallel, chain, async) |
+| `@tintinweb/pi-subagents`        | Multi-agent orchestration (parallel, chain, async) |
 | `pi-lens`                        | AST-grep, tree-sitter, LSP diagnostics             |
 | `@gotgenes/pi-permission-system` | Permission management extension                    |
 | `pi-mcp-adapter`                 | MCP (Model Context Protocol) integration           |
+| `pi-rewind`                      | Session rewind and replay                          |
+| `pi-gen-license`                 | License file generation                            |
 
 ### Skills
 
 Custom skills in `skills/`:
 
-- **skill-creator** — Guide for creating new Pi skills with scripts, references, and assets
+- **craft-skill** — Design principles and workflow for creating sharp, predictable AI agent skills
 
-Additional skills are provided by installed packages (Lark suite, git-commit, TDD, research, etc.).
+Additional skills are provided by installed packages (Lark suite, git-commit, brainstorm, frontend-design, etc.).
 
 ### Behavioral Guidelines
 
@@ -120,9 +124,11 @@ Controls permission rules for bash commands, file paths, and external directory 
 ├── auth.json                # Auth tokens (gitignored)
 ├── extensions/
 │   ├── pi-cc-header/        # Animated startup header
-│   └── pi-permission-system/ # Permission management
+│   ├── pi-permission-system/ # Permission management
+│   ├── release-npm/         # NPM package release automation
+│   └── template-manager/    # Project template management
 ├── skills/
-│   └── skill-creator/       # Skill creation guide
+│   └── craft-skill/         # Skill creation guide
 └── npm/
     └── node_modules/        # Installed packages
 ```
