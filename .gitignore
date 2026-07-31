@@ -9,3 +9,5 @@ trust.json
 run-history.jsonl
 node_modules
 logs/
+powerline-footer/
+pi-crash.log

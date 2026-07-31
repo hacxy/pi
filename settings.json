@@ -11,7 +11,8 @@
     "npm:pi-mcp-adapter",
     "npm:pi-rewind",
     "npm:pi-gen-license",
-    "npm:@tintinweb/pi-subagents"
+    "npm:@tintinweb/pi-subagents",
+    "npm:pi-cc-header"
   ],
   "defaultThinkingLevel": "high",
   "clearOnStart": true,
@@ -23,11 +24,5 @@
   },
   "rsl": true,
   "quietStartup": true,
-  "subagents": {
-    "agentOverrides": {
-      "researcher": {
-        "thinking": "high"
-      }
-    }
-  }
+  "showHardwareCursor": true
 }

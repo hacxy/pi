@@ -3,6 +3,10 @@
     {
       "name": "react-web",
       "repo": "hacxy/tpl-react-web"
+    },
+    {
+      "name": "pi-extension",
+      "repo": "hacxy/tpl-pi-extension"
     }
   ]
 }
