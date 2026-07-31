@@ -6,12 +6,12 @@
   "packages": [
     "npm:@hacxy/skills",
     "npm:pi-web-access",
-    "npm:pi-subagents",
     "npm:pi-lens",
     "npm:@gotgenes/pi-permission-system",
     "npm:pi-mcp-adapter",
     "npm:pi-rewind",
-    "npm:pi-gen-license"
+    "npm:pi-gen-license",
+    "npm:@tintinweb/pi-subagents"
   ],
   "defaultThinkingLevel": "high",
   "clearOnStart": true,

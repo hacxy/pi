@@ -479,11 +479,14 @@ export default function (pi: ExtensionAPI) {
 		"agent",
 		"settings.json",
 	);
-	const getSettings = (): Record<string, any> => {
+	const getSettings = (): Record<string, any> | null => {
 		try {
-			return JSON.parse(readFileSync(settingsPath, "utf-8"));
+			const content = readFileSync(settingsPath, "utf-8");
+			const parsed = JSON.parse(content);
+			if (!parsed || typeof parsed !== "object") return null;
+			return parsed;
 		} catch {
-			return {};
+			return null;
 		}
 	};
 	const saveSettings = (s: Record<string, any>) =>
@@ -519,6 +522,7 @@ export default function (pi: ExtensionAPI) {
 
 	pi.on("session_start", (event, ctx) => {
 		const s = getSettings();
+		if (!s) return; // parse failed, skip to avoid overwriting settings
 		const h = s.ccHeader || {};
 		if (h.disabled) return;
 		stripeEnabled = h.lines ?? true;
