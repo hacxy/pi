@@ -1,0 +1,8 @@
+{
+  "name": "pi-agent-extensions",
+  "private": true,
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "latest",
+    "@earendil-works/pi-tui": "latest"
+  }
+}

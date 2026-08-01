@@ -12,7 +12,6 @@
     "npm:pi-rewind",
     "npm:pi-gen-license",
     "npm:@tintinweb/pi-subagents",
-    "npm:pi-cc-header",
     "npm:pi-lite-footer"
   ],
   "defaultThinkingLevel": "high",
