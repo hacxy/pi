@@ -1,6 +1,10 @@
 # Pi Agent Configuration
 
+[English](README.md) | [中文](README_ZH.md)
+
 My personal [Pi](https://pi.dev) coding agent configuration — includes custom extensions, skills, behavioral guidelines, and package setup.
+
+[![Pi Version](https://img.shields.io/badge/Pi-%3E%3D0.83.0-blue.svg)](https://pi.dev)
 
 ## Getting Started
 
