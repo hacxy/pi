@@ -12,15 +12,22 @@
     "npm:pi-rewind",
     "npm:pi-gen-license",
     "npm:@tintinweb/pi-subagents",
-    "npm:pi-cc-header"
+    "npm:pi-cc-header",
+    "npm:pi-lite-footer"
   ],
   "defaultThinkingLevel": "high",
   "clearOnStart": true,
   "ccHeader": {
     "color": "a",
     "ver": 1,
+    "grad": true,
     "lines": false,
-    "grad": true
+    "pkg": true,
+    "speed": 50,
+    "slogan": "Code something that makes you proud",
+    "sloganOn": true,
+    "sloganColor": true,
+    "disabled": false
   },
   "rsl": true,
   "quietStartup": true,

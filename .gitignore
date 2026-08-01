@@ -11,3 +11,5 @@ node_modules
 logs/
 powerline-footer/
 pi-crash.log
+mcp-cache.json
+mcp-npx-cache.json
