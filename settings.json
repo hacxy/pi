@@ -21,7 +21,6 @@
     "ver": 1,
     "grad": true,
     "lines": false,
-    "pkg": true,
     "speed": 50,
     "slogan": "Code something that makes you proud",
     "sloganOn": true,
@@ -29,6 +28,5 @@
     "disabled": false
   },
   "rsl": true,
-  "quietStartup": true,
   "showHardwareCursor": true
 }
