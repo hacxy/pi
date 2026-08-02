@@ -28,15 +28,13 @@ export default function (pi: ExtensionAPI) {
 
 			ctx.ui.notify("Generating commit messages...", "info");
 
-			pi.sendUserMessage(
-				`Analyze the staged git diff and call the git_commit tool with exactly 3 commit message options.
-
-Each option must have:
-- "english": Conventional Commits format (e.g. "feat(auth): add login")
-- "chinese": Complete Chinese translation (e.g. "feat(auth): 添加登录功能")
-
-IMPORTANT: type(scope) stays in English. Only translate the description after the colon.`,
-				{ deliverAs: "steer" },
+			pi.sendMessage(
+				{
+					customType: "ship",
+					content: `Analyze the staged git diff and call the git_commit tool with exactly 3 commit message options.\n\nEach option must have:\n- "english": Conventional Commits format (e.g. "feat(auth): add login")\n- "chinese": Complete Chinese translation (e.g. "feat(auth): 添加登录功能")\n\nIMPORTANT: type(scope) stays in English. Only translate the description after the colon.`,
+					display: false,
+				},
+				{ deliverAs: "steer", triggerTurn: true },
 			);
 		},
 	});
