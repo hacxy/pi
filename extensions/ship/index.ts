@@ -32,7 +32,7 @@ export default function (pi: ExtensionAPI) {
 			ctx.ui.notify("Generating commit message...", "info");
 
 			pi.sendUserMessage(
-				`Analyze the staged git diff and generate a Conventional Commits message. Then call the git_commit tool with the generated summary and message. Use shouldPush=${JSON.stringify(shouldPush)} and ignore any push decision when noPush=${JSON.stringify(noPush)} is true.`,
+				`Analyze the staged git diff and generate a Conventional Commits message. Then call the git_commit tool with the summary and message. Use shouldPush=${JSON.stringify(shouldPush)} and ignore any push decision when noPush=${JSON.stringify(noPush)} is true.`,
 				{ deliverAs: "steer" },
 			);
 		},
@@ -52,14 +52,14 @@ export default function (pi: ExtensionAPI) {
 				description: "Whether to push after committing",
 			}),
 		}),
-		async execute(_toolCallId, params, _signal, _onUpdate, toolCtx) {
+		async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
 			const { summary, message, shouldPush } = params as {
 				summary: string;
 				message: string;
 				shouldPush: boolean;
 			};
 
-			const confirmed = await toolCtx.ui.confirm(
+			const confirmed = await ctx.ui.confirm(
 				"Confirm Commit",
 				`Changes:\n${summary}\n\nCommit message:\n${message}`,
 			);
@@ -73,11 +73,10 @@ export default function (pi: ExtensionAPI) {
 
 			try {
 				await execAsync(`git commit -m ${JSON.stringify(message)}`);
-			} catch (e: any) {
+			} catch (e: unknown) {
+				const err = e instanceof Error ? e.message : String(e);
 				return {
-					content: [
-						{ type: "text", text: `Commit failed: ${e.stderr || e.message}` },
-					],
+					content: [{ type: "text", text: `Commit failed: ${err}` }],
 					details: {},
 					isError: true,
 				};
@@ -86,12 +85,13 @@ export default function (pi: ExtensionAPI) {
 			if (shouldPush) {
 				try {
 					await execAsync("git push");
-				} catch (e: any) {
+				} catch (e: unknown) {
+					const err = e instanceof Error ? e.message : String(e);
 					return {
 						content: [
 							{
 								type: "text",
-								text: `Committed but push failed: ${e.stderr || e.message}`,
+								text: `Committed but push failed: ${err}`,
 							},
 						],
 						details: {},
