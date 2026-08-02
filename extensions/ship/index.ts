@@ -59,20 +59,19 @@ export default function (pi: ExtensionAPI) {
 				shouldPush: boolean;
 			};
 
-			const confirmed = await ctx.ui.confirm(
-				"Confirm Commit",
-				`Changes:\n${summary}\n\nCommit message:\n${message}`,
-			);
+			const editedMessage = await ctx.ui.editor("Edit Commit Message", message);
 
-			if (!confirmed) {
+			if (editedMessage === undefined || editedMessage === null) {
 				return {
 					content: [{ type: "text", text: "Commit cancelled by user" }],
 					details: {},
 				};
 			}
 
+			const finalMessage = editedMessage.trim() || message;
+
 			try {
-				await execAsync(`git commit -m ${JSON.stringify(message)}`);
+				await execAsync(`git commit -m ${JSON.stringify(finalMessage)}`);
 			} catch (e: unknown) {
 				const err = e instanceof Error ? e.message : String(e);
 				return {
@@ -106,14 +105,14 @@ export default function (pi: ExtensionAPI) {
 
 				return {
 					content: [
-						{ type: "text", text: `Committed and pushed:\n${message}` },
+						{ type: "text", text: `Committed and pushed:\n${finalMessage}` },
 					],
 					details: {},
 				};
 			}
 
 			return {
-				content: [{ type: "text", text: `Committed:\n${message}` }],
+				content: [{ type: "text", text: `Committed:\n${finalMessage}` }],
 				details: {},
 			};
 		},
