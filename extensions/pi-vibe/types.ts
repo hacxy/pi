@@ -6,23 +6,17 @@
 
 // 主题组
 export interface ThemeGroup {
-  name: string;
-  emoji: string[];
-  messages: string[];
+	name: string;
+	emoji: string[];
+	messages: string[];
 }
 
 // 主题
 export interface WorkingTheme {
-  name: string;
-  description: string;
-  groups: ThemeGroup[];
+	name: string;
+	description: string;
+	groups: ThemeGroup[];
 }
 
 // 文字动画类型
-export type TextAnimationType =
-  | "typewriter"
-  | "breathe"
-  | "blink"
-  | "scanline"
-  | "wave"
-  | "marquee";
+export type TextAnimationType = "breathe" | "blink" | "scanline" | "wave";

@@ -1,7 +1,7 @@
 /**
  * 文字动画效果模块
  *
- * 实现各种文字动画效果：打字机、呼吸灯、闪烁、扫描线、波浪、跑马灯
+ * 实现各种文字动画效果：呼吸灯、闪烁、扫描线、波浪
  */
 
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
@@ -10,12 +10,10 @@ import { randomChoice } from "./utils";
 
 // 文字动画类型列表（排除 neon 和 gradient，因为它们未实现）
 const TEXT_ANIMATIONS: TextAnimationType[] = [
-	"typewriter",
 	"breathe",
 	"blink",
 	"scanline",
 	"wave",
-	"marquee",
 ];
 
 // 文字动画定时器
@@ -81,89 +79,6 @@ export function resetTimer(): void {
 }
 
 // ==================== 动画效果实现 ====================
-
-/**
- * 打字机效果：逐字显示，打完后逐字删除，再重新打
- */
-function applyTypewriterAnimation(
-	ctx: ExtensionContext,
-	message: string,
-): void {
-	const CHAR_INTERVAL = 80; // 每个字的间隔
-	const PAUSE_AFTER_TYPE = 1000; // 打完后停顿
-	const PAUSE_AFTER_DELETE = 500; // 删除完后停顿
-
-	let phase:
-		| "typing"
-		| "pausing-after-type"
-		| "deleting"
-		| "pausing-after-delete" = "typing";
-	let charIndex = 0;
-	let displayText = "";
-
-	// 先显示完整文案
-	ctx.ui.setWorkingMessage(`${message} ${getTimeStr()}`);
-	charIndex = message.length;
-	displayText = message;
-	phase = "pausing-after-type";
-
-	let pauseTimer = 0;
-
-	const tid = setInterval(() => {
-		const timeStr = getTimeStr();
-
-		switch (phase) {
-			case "typing":
-				// 逐字显示
-				if (charIndex < message.length) {
-					displayText += message[charIndex];
-					ctx.ui.setWorkingMessage(`${displayText}▌ ${timeStr}`);
-					charIndex++;
-				} else {
-					// 打完，进入停顿
-					ctx.ui.setWorkingMessage(`${message} ${timeStr}`);
-					phase = "pausing-after-type";
-					pauseTimer = 0;
-				}
-				break;
-
-			case "pausing-after-type":
-				// 打完后停顿
-				pauseTimer += CHAR_INTERVAL;
-				if (pauseTimer >= PAUSE_AFTER_TYPE) {
-					phase = "deleting";
-				}
-				break;
-
-			case "deleting":
-				// 逐字删除
-				if (charIndex > 0) {
-					charIndex--;
-					displayText = message.slice(0, charIndex);
-					ctx.ui.setWorkingMessage(`${displayText}▌ ${timeStr}`);
-				} else {
-					// 删除完，进入停顿
-					ctx.ui.setWorkingMessage(`▌ ${timeStr}`);
-					phase = "pausing-after-delete";
-					pauseTimer = 0;
-				}
-				break;
-
-			case "pausing-after-delete":
-				// 删除完后停顿
-				pauseTimer += CHAR_INTERVAL;
-				if (pauseTimer >= PAUSE_AFTER_DELETE) {
-					// 重新开始打字
-					phase = "typing";
-					charIndex = 0;
-					displayText = "";
-				}
-				break;
-		}
-	}, CHAR_INTERVAL);
-	textAnimationTimer = tid;
-	(globalThis as any)[GLOBAL_TEXT_TIMER_KEY] = tid;
-}
 
 /**
  * 呼吸效果：明暗交替
@@ -246,23 +161,6 @@ function applyWaveAnimation(ctx: ExtensionContext, message: string): void {
 	(globalThis as any)[GLOBAL_TEXT_TIMER_KEY] = tid;
 }
 
-/**
- * 跑马灯效果：文案循环滚动
- */
-function applyMarqueeAnimation(ctx: ExtensionContext, message: string): void {
-	const spaces = "    ";
-	const fullText = spaces + message + spaces;
-	let offset = 0;
-
-	const tid = setInterval(() => {
-		const display = fullText.slice(offset, offset + message.length);
-		ctx.ui.setWorkingMessage(`\x1b[36m${display}\x1b[0m ${getTimeStr()}`);
-		offset = (offset + 1) % (message.length + spaces.length);
-	}, 200);
-	textAnimationTimer = tid;
-	(globalThis as any)[GLOBAL_TEXT_TIMER_KEY] = tid;
-}
-
 // ==================== 主入口 ====================
 
 /**
@@ -290,9 +188,6 @@ export function applyTextAnimation(
 
 	// 根据动画类型应用效果
 	switch (animationType) {
-		case "typewriter":
-			applyTypewriterAnimation(ctx, message);
-			break;
 		case "breathe":
 			applyBreatheAnimation(ctx, message);
 			break;
@@ -304,9 +199,6 @@ export function applyTextAnimation(
 			break;
 		case "wave":
 			applyWaveAnimation(ctx, message);
-			break;
-		case "marquee":
-			applyMarqueeAnimation(ctx, message);
 			break;
 	}
 }
