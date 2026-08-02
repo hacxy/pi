@@ -73,9 +73,14 @@ export default function (pi: ExtensionAPI) {
 		}
 	});
 
-	// agent 结束时停止定时器
+	// agent 结束时停止定时器（子 agent 的 agent_end 在 tool_execution_end 之前触发，此时 agentToolRunning 仍为 true，会被过滤）
 	pi.on("agent_end", async () => {
 		if (agentToolRunning) return;
+		stopAllTimers();
+	});
+
+	// session 关闭时停止定时器
+	pi.on("session_shutdown", async () => {
 		stopAllTimers();
 	});
 
