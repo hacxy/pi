@@ -70,8 +70,7 @@ export default function (pi: ExtensionAPI) {
 	pi.registerCommand("ship", {
 		description: "Stage changes, generate commit message options, and commit",
 		handler: async (args, ctx) => {
-			const trimmedArgs = args?.trim() ?? "";
-			const shouldPush = trimmedArgs === "--push";
+			args;
 
 			try {
 				await execAsync("git rev-parse --is-inside-work-tree");
@@ -93,25 +92,27 @@ export default function (pi: ExtensionAPI) {
 			pi.sendUserMessage(
 				`Analyze the staged git diff and generate EXACTLY 3 different Conventional Commits message options. Then call the git_commit tool.
 
-Format your response as:
+IMPORTANT: The Chinese part must COMPLETELY translate the description after the colon into Chinese. Keep type(scope) in English.
+
+Format:
 1. <type>(<scope>): <english description>
-   [<type>(<scope>): <中文描述>]
+   [<type>(<scope>): <中文翻译>]
 
 2. <type>(<scope>): <english description>
-   [<type>(<scope>): <中文描述>]
+   [<type>(<scope>): <中文翻译>]
 
 3. <type>(<scope>): <english description>
-   [<type>(<scope>): <中文描述>]
+   [<type>(<scope>): <中文翻译>]
 
 Example:
 1. feat(auth): add user login validation
    [feat(auth): 添加用户登录验证]
 
-2. feat(auth): implement authentication flow
-   [feat(auth): 实现认证流程]
+2. chore(nvim): migrate config to LazyVim
+   [chore(nvim): 将配置迁移到 LazyVim]
 
-3. feat(auth): add credential verification
-   [feat(auth): 添加凭证验证]
+3. fix(api): handle null response from server
+   [fix(api): 处理服务器返回的空响应]
 
 Types: feat/fix/refactor/chore/docs/style/test/perf/ci/build
 
