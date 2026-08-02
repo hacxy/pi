@@ -82,7 +82,12 @@ export default function (pi: ExtensionAPI) {
 				};
 			}
 
-			if (shouldPush) {
+			let doPush = shouldPush;
+			if (!doPush) {
+				doPush = await ctx.ui.confirm("Push", "Push to remote?");
+			}
+
+			if (doPush) {
 				try {
 					await execAsync("git push");
 				} catch (e: unknown) {
