@@ -128,14 +128,14 @@ export default function (pi: ExtensionAPI) {
 					`✅ Committed and pushed:\n${selectedOption.english}\n${selectedOption.chinese}`,
 					"info",
 				);
-				return { content: [], details: {} };
+				return { content: [], details: {}, terminate: true };
 			}
 
 			ctx.ui.notify(
 				`✅ Committed:\n${selectedOption.english}\n${selectedOption.chinese}`,
 				"info",
 			);
-			return { content: [], details: {} };
+			return { content: [], details: {}, terminate: true };
 		},
 	});
 }
