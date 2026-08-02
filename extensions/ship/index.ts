@@ -7,14 +7,14 @@ const execAsync = promisify(exec);
 
 export default function (pi: ExtensionAPI) {
 	pi.registerCommand("ship", {
-		description: "Stage changes, generate commit message options, and commit",
+		description: "暂存更改、生成提交信息选项并提交",
 		handler: async (args, ctx) => {
 			args;
 
 			try {
 				await execAsync("git rev-parse --is-inside-work-tree");
 			} catch {
-				ctx.ui.notify("Not a git repository", "error");
+				ctx.ui.notify("不是 git 仓库", "error");
 				return;
 			}
 
@@ -22,11 +22,11 @@ export default function (pi: ExtensionAPI) {
 
 			const { stdout: diff } = await execAsync("git diff --cached");
 			if (!diff.trim()) {
-				ctx.ui.notify("No changes to commit", "info");
+				ctx.ui.notify("没有需要提交的更改", "info");
 				return;
 			}
 
-			ctx.ui.notify("Generating commit messages...", "info");
+			ctx.ui.notify("正在生成提交信息...", "info");
 
 			pi.sendMessage(
 				{
@@ -42,7 +42,7 @@ export default function (pi: ExtensionAPI) {
 	pi.registerTool({
 		name: "git_commit",
 		label: "Git Commit",
-		description: "Create a git commit from user-selected message option",
+		description: "从用户选择的提交信息创建 git 提交",
 		parameters: Type.Object({
 			options: Type.Array(
 				Type.Object({
@@ -63,7 +63,7 @@ export default function (pi: ExtensionAPI) {
 
 			if (options.length === 0) {
 				return {
-					content: [{ type: "text", text: "Error: No options provided" }],
+					content: [{ type: "text", text: "错误：未提供选项" }],
 					details: {},
 					isError: true,
 				};
@@ -75,14 +75,11 @@ export default function (pi: ExtensionAPI) {
 			);
 
 			// Let user select
-			const selected = await ctx.ui.select(
-				"Select commit message:",
-				selectItems,
-			);
+			const selected = await ctx.ui.select("选择提交信息：", selectItems);
 
 			if (!selected) {
 				return {
-					content: [{ type: "text", text: "Commit cancelled by user" }],
+					content: [{ type: "text", text: "用户取消了提交" }],
 					details: {},
 				};
 			}
@@ -93,9 +90,7 @@ export default function (pi: ExtensionAPI) {
 
 			if (!selectedOption) {
 				return {
-					content: [
-						{ type: "text", text: "Commit cancelled: invalid selection" },
-					],
+					content: [{ type: "text", text: "提交取消：选择无效" }],
 					details: {},
 					isError: true,
 				};
@@ -109,18 +104,18 @@ export default function (pi: ExtensionAPI) {
 				);
 			} catch (e: unknown) {
 				const err = e instanceof Error ? e.message : String(e);
-				ctx.ui.notify(`Commit failed: ${err}`, "error");
+				ctx.ui.notify(`提交失败：${err}`, "error");
 				return { content: [], details: {}, isError: true };
 			}
 
 			// Notify commit success immediately
 			ctx.ui.notify(
-				`✅ Committed:\n${selectedOption.english}\n${selectedOption.chinese}`,
+				`✨ 已提交：\n${selectedOption.english}\n${selectedOption.chinese}`,
 				"info",
 			);
 
 			// Ask about push
-			const doPush = await ctx.ui.confirm("Push", "Push to remote?");
+			const doPush = await ctx.ui.confirm("推送", "推送到远程？");
 
 			if (doPush) {
 				ctx.ui.notify("推送中...", "info");
@@ -128,11 +123,11 @@ export default function (pi: ExtensionAPI) {
 					await execAsync("git push");
 				} catch (e: unknown) {
 					const err = e instanceof Error ? e.message : String(e);
-					ctx.ui.notify(`Push failed: ${err}`, "error");
+					ctx.ui.notify(`推送失败：${err}`, "error");
 					return { content: [], details: {}, isError: true };
 				}
 
-				ctx.ui.notify("✅ Pushed", "info");
+				ctx.ui.notify("✨ 已推送", "info");
 			}
 
 			return { content: [], details: {}, terminate: true };
