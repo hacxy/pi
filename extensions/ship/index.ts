@@ -108,11 +108,8 @@ export default function (pi: ExtensionAPI) {
 				);
 			} catch (e: unknown) {
 				const err = e instanceof Error ? e.message : String(e);
-				return {
-					content: [{ type: "text", text: `Commit failed: ${err}` }],
-					details: {},
-					isError: true,
-				};
+				ctx.ui.notify(`Commit failed: ${err}`, "error");
+				return { content: [], details: {}, isError: true };
 			}
 
 			// Ask about push
@@ -123,35 +120,22 @@ export default function (pi: ExtensionAPI) {
 					await execAsync("git push");
 				} catch (e: unknown) {
 					const err = e instanceof Error ? e.message : String(e);
-					return {
-						content: [
-							{ type: "text", text: `Committed but push failed: ${err}` },
-						],
-						details: {},
-						isError: true,
-					};
+					ctx.ui.notify(`Committed but push failed: ${err}`, "error");
+					return { content: [], details: {}, isError: true };
 				}
 
-				return {
-					content: [
-						{
-							type: "text",
-							text: `✅ Committed and pushed:\n\n${selectedOption.english}\n${selectedOption.chinese}`,
-						},
-					],
-					details: {},
-				};
+				ctx.ui.notify(
+					`✅ Committed and pushed:\n${selectedOption.english}\n${selectedOption.chinese}`,
+					"info",
+				);
+				return { content: [], details: {} };
 			}
 
-			return {
-				content: [
-					{
-						type: "text",
-						text: `✅ Committed:\n\n${selectedOption.english}\n${selectedOption.chinese}`,
-					},
-				],
-				details: {},
-			};
+			ctx.ui.notify(
+				`✅ Committed:\n${selectedOption.english}\n${selectedOption.chinese}`,
+				"info",
+			);
+			return { content: [], details: {} };
 		},
 	});
 }
