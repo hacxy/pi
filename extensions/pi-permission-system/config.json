@@ -1,0 +1,31 @@
+{
+  "yoloMode": false,
+  "doublePressToConfirm": true,
+  "permission": {
+    "*": "allow",
+    "path": {
+      "*": "allow",
+      "*.env": "ask",
+      "*.env.*": "ask",
+      "*.env.example": "allow",
+      "~/.ssh/*": "ask",
+      "*.pem": "ask",
+      "*.key": "ask"
+    },
+    "bash": {
+      "*": "allow",
+      "rm -rf *": "ask",
+      "sudo *": "deny",
+      "chmod 777 *": "deny",
+      "curl *": "ask",
+      "wget *": "ask",
+      "ssh *": "ask"
+    },
+    "external_directory": {
+      "*": "ask",
+      "~/.pi/agent/*": "allow",
+      "~/.agents/*": "allow",
+      "**/node_modules/@earendil-works/*": "allow"
+    }
+  }
+}

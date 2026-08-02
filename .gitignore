@@ -1,0 +1,11 @@
+auth.json
+models-store.json
+sessions/
+npm/
+git/
+.pi-subagents/
+__pycache__/
+trust.json
+run-history.jsonl
+node_modules
+
