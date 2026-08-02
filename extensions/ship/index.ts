@@ -73,7 +73,7 @@ IMPORTANT: type(scope) stays in English. Only translate the description after th
 
 			// Build select list
 			const selectItems = options.map(
-				(opt, i) => `${i + 1}. ${opt.english}\n   [${opt.chinese}]`,
+				(opt, i) => `${i + 1}. ${opt.english}\n   ${opt.chinese}`,
 			);
 
 			// Let user select
@@ -138,7 +138,7 @@ IMPORTANT: type(scope) stays in English. Only translate the description after th
 					content: [
 						{
 							type: "text",
-							text: `✅ Committed and pushed:\n${selectedOption.english}`,
+							text: `✅ Committed and pushed:\n\n${selectedOption.english}\n${selectedOption.chinese}`,
 						},
 					],
 					details: {},
@@ -149,7 +149,7 @@ IMPORTANT: type(scope) stays in English. Only translate the description after th
 				content: [
 					{
 						type: "text",
-						text: `✅ Committed:\n${selectedOption.english}`,
+						text: `✅ Committed:\n\n${selectedOption.english}\n${selectedOption.chinese}`,
 					},
 				],
 				details: {},
