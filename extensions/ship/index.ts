@@ -112,6 +112,12 @@ export default function (pi: ExtensionAPI) {
 				return { content: [], details: {}, isError: true };
 			}
 
+			// Notify commit success immediately
+			ctx.ui.notify(
+				`✅ Committed:\n${selectedOption.english}\n${selectedOption.chinese}`,
+				"info",
+			);
+
 			// Ask about push
 			const doPush = await ctx.ui.confirm("Push", "Push to remote?");
 
@@ -120,21 +126,13 @@ export default function (pi: ExtensionAPI) {
 					await execAsync("git push");
 				} catch (e: unknown) {
 					const err = e instanceof Error ? e.message : String(e);
-					ctx.ui.notify(`Committed but push failed: ${err}`, "error");
+					ctx.ui.notify(`Push failed: ${err}`, "error");
 					return { content: [], details: {}, isError: true };
 				}
 
-				ctx.ui.notify(
-					`✅ Committed and pushed:\n${selectedOption.english}\n${selectedOption.chinese}`,
-					"info",
-				);
-				return { content: [], details: {}, terminate: true };
+				ctx.ui.notify("✅ Pushed", "info");
 			}
 
-			ctx.ui.notify(
-				`✅ Committed:\n${selectedOption.english}\n${selectedOption.chinese}`,
-				"info",
-			);
 			return { content: [], details: {}, terminate: true };
 		},
 	});
