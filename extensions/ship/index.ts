@@ -102,20 +102,18 @@ export default function (pi: ExtensionAPI) {
 			}
 
 			// Commit with English message
-			ctx.ui.setStatus("ship", "提交中...");
+			ctx.ui.notify("提交中...", "info");
 			try {
 				await execAsync(
 					`git commit -m ${JSON.stringify(selectedOption.english)}`,
 				);
 			} catch (e: unknown) {
 				const err = e instanceof Error ? e.message : String(e);
-				ctx.ui.setStatus("ship", undefined);
 				ctx.ui.notify(`Commit failed: ${err}`, "error");
 				return { content: [], details: {}, isError: true };
 			}
 
 			// Notify commit success immediately
-			ctx.ui.setStatus("ship", undefined);
 			ctx.ui.notify(
 				`✅ Committed:\n${selectedOption.english}\n${selectedOption.chinese}`,
 				"info",
@@ -125,17 +123,15 @@ export default function (pi: ExtensionAPI) {
 			const doPush = await ctx.ui.confirm("Push", "Push to remote?");
 
 			if (doPush) {
-				ctx.ui.setStatus("ship", "推送中...");
+				ctx.ui.notify("推送中...", "info");
 				try {
 					await execAsync("git push");
 				} catch (e: unknown) {
 					const err = e instanceof Error ? e.message : String(e);
-					ctx.ui.setStatus("ship", undefined);
 					ctx.ui.notify(`Push failed: ${err}`, "error");
 					return { content: [], details: {}, isError: true };
 				}
 
-				ctx.ui.setStatus("ship", undefined);
 				ctx.ui.notify("✅ Pushed", "info");
 			}
 
