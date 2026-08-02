@@ -4,7 +4,6 @@
   "defaultProvider": "xiaomi-token-plan-cn",
   "defaultModel": "mimo-v2.5-pro",
   "packages": [
-    "npm:@hacxy/skills",
     "npm:pi-web-access",
     "npm:pi-lens",
     "npm:@gotgenes/pi-permission-system",
@@ -26,7 +25,5 @@
     "sloganOn": true,
     "sloganColor": true,
     "disabled": false
-  },
-  "rsl": true,
-  "showHardwareCursor": true
+  }
 }
