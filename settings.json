@@ -25,5 +25,6 @@
     "sloganOn": true,
     "sloganColor": true,
     "disabled": false
-  }
+  },
+  "quietStartup": true
 }
