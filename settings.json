@@ -26,7 +26,7 @@
     "sloganColor": true,
     "disabled": false
   },
-  "quietStartup": false,
+  "quietStartup": true,
   "pi-spin-color": {
     "color": "rainbow"
   }

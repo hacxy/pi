@@ -103,8 +103,35 @@ export default function (pi: ExtensionAPI) {
 					`git commit -m ${JSON.stringify(selectedOption.english)}`,
 				);
 			} catch (e: unknown) {
-				const err = e instanceof Error ? e.message : String(e);
-				ctx.ui.notify(`提交失败：${err}`, "error");
+				const err = e instanceof Error ? e : new Error(String(e));
+				const stderr = "stderr" in err ? (err as any).stderr : "";
+				const stdout = "stdout" in err ? (err as any).stdout : "";
+				const output = (stderr || stdout || err.message).toString();
+
+				// 检查是否是 lint 错误（lint-staged 通常会返回非零退出码）
+				const isLintError =
+					output.includes("lint") ||
+					output.includes("error") ||
+					output.includes("warning") ||
+					output.includes("prettier") ||
+					output.includes("eslint") ||
+					output.includes("biome");
+
+				if (isLintError) {
+					ctx.ui.notify("检测到 lint 错误，正在自动修复...", "warning");
+					// 将 lint 错误发送给 LLM 修复
+					pi.sendMessage(
+						{
+							customType: "ship-lint-fix",
+							content: `Git commit 失败，lint-staged 报错。请修复以下 lint 错误，然后重新执行 git commit：\n\n\`\`\`\n${output}\n\`\`\`\n\n提交信息：${JSON.stringify(selectedOption.english)}\n\n请直接修复代码中的问题，修复后不要重新 commit，我会自动重试。`,
+							display: true,
+						},
+						{ deliverAs: "steer", triggerTurn: true },
+					);
+					return { content: [], details: {} };
+				}
+
+				ctx.ui.notify(`提交失败：${output}`, "error");
 				return { content: [], details: {}, isError: true };
 			}
 
