@@ -9,7 +9,6 @@ function computeStats(pi: ExtensionAPI, ctx: { cwd: string }): StatsResult {
 
 	const extensionPaths = new Set<string>();
 	let prompts = 0;
-	let skills = 0;
 
 	for (const cmd of commands) {
 		switch (cmd.source) {
@@ -21,9 +20,6 @@ function computeStats(pi: ExtensionAPI, ctx: { cwd: string }): StatsResult {
 			case "prompt":
 				prompts++;
 				break;
-			case "skill":
-				skills++;
-				break;
 		}
 	}
 
@@ -34,7 +30,7 @@ function computeStats(pi: ExtensionAPI, ctx: { cwd: string }): StatsResult {
 
 	return {
 		extensions: extensionPaths.size,
-		skills,
+		skills: commands.filter((c) => c.source === "skill").length,
 		prompts,
 		agents:
 			globalAgents && projectAgents

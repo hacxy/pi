@@ -24,7 +24,7 @@ function padRight(text: string, width: number): string {
 export class PiHeader implements Component {
 	private frame = 0;
 	private timer: ReturnType<typeof setTimeout> | null = null;
-	private readonly stats: StatsResult;
+	private stats: StatsResult;
 	private readonly state: CCHeaderState;
 	private cachedInfoRows: Record<number, string> | null = null;
 	private cachedInfoWidth = -1;
@@ -119,6 +119,7 @@ export class PiHeader implements Component {
 
 	invalidate(): void {}
 	reapply(): void {
+		this.stats = getCachedStats(this.pi, this.ctx);
 		this.cachedInfoRows = null;
 		this.tui.requestRender();
 	}

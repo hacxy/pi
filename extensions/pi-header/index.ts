@@ -1,21 +1,17 @@
-import type {
-	ExtensionAPI,
-	ExtensionContext,
-} from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { join } from "node:path";
 import {
 	getState,
 	setState,
 	stateFromConfig,
 	readSettings,
-	saveSettings,
 	setScreenCleared,
 	isScreenCleared,
 	setFramesDirty,
 } from "./state";
 import { invalidateStats } from "./stats";
 import { recomputeFrames, updateLogoParams } from "./logo";
-import { apply } from "./ui";
+import { apply, getActiveHeader } from "./ui";
 import { registerCommands } from "./commands";
 
 export default function (pi: ExtensionAPI) {
@@ -70,6 +66,16 @@ export default function (pi: ExtensionAPI) {
 		if (isResuming) isResuming = false;
 
 		setTimeout(() => apply(pi, ctx, "none", skipAnimation), 0);
+	});
+
+	// resources_discover fires after session_start.
+	// Extensions like pi-lens contribute their skills here.
+	// We use setTimeout(0) to defer to after extendResourcesFromExtensions completes.
+	pi.on("resources_discover", async () => {
+		setTimeout(() => {
+			invalidateStats();
+			getActiveHeader()?.reapply();
+		}, 0);
 	});
 
 	registerCommands(pi);
