@@ -35,8 +35,14 @@ fi
 
 for ((i=1; i<=iterations; i++)); do
   echo "------- ITERATION $i --------"
-  "$ONCE_SCRIPT" "${docs[@]}"
-  rc=$?
+  # set -e 陷阱：不能用 `"$ONCE_SCRIPT"; rc=$?` —— once 返回非零（正常结束=2）时
+  # errexit 会在 rc=$? 执行前杀掉脚本，导致迭代数 >1 也只跑一轮就静默退出。
+  # 必须用 if 形式（if 条件中的命令不受 errexit 约束）捕获退出码。
+  if "$ONCE_SCRIPT" "${docs[@]}"; then
+    rc=0
+  else
+    rc=$?
+  fi
   if [ "$rc" -eq 0 ]; then
     echo "Ralph complete after $i iterations."
     exit 0

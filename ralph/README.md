@@ -15,6 +15,8 @@ mattpocock 的 [afk-claude.sh](https://github.com/mattpocock/ralph-workshop-repo
 
 ## 用法
 
+### 宿主直跑（无容器）
+
 ```bash
 # 单轮执行一个任务（手动逐步推进）
 ./once ./prd/prd.md ./plan/plan.md
@@ -23,13 +25,29 @@ mattpocock 的 [afk-claude.sh](https://github.com/mattpocock/ralph-workshop-repo
 ./afk ./prd/prd.md ./plan/plan.md 10
 ```
 
+### 容器化运行（推荐：afk-run）
+
+在任意项目目录内执行，自动以当前目录为项目容器：
+
+```bash
+cd ~/Projects/my-app
+~/.pi/agent/ralph/afk-run ./prd/prd.md ./plan/plan.md 10
+# 或加入 PATH 后直接用: afk-run ./prd/prd.md ./plan/plan.md 10
+```
+
+- 容器名 = git remote origin 仓库名（无 remote 时用目录名）+ `-afk`
+- 首次自动创建容器（bind 当前目录 → /workspace，技能/ralph 只读挂载），之后 `docker start` 复用
+- **凭据零输入**：`GH_TOKEN` ← 宿主 `gh auth token`；`DEEPSEEK_API_KEY` ← `~/.pi/agent/auth.json`；git 身份（user.name/user.email）自动从宿主全局/仓库本地配置注入容器，首次 commit 不会因 `Author identity unknown` 失败
+- 无参数运行 `afk-run` 进入容器交互模式（`pi`）
+- ralph/afk/once/prompt.md 逻辑零改动，仅运行环境容器化（镜像：`afk-base:latest`，见 `afk-base/`）
+
+两种方式共用同一套参数与行为：
+
 - 两个文档顺序可变，全部作为上下文传入（agent 从文件名识别 PRD / PLAN）
-- 可选环境变量 `RALPH_MODEL` 指定子进程模型（如 `anthropic/claude-sonnet-4`），
-  不设置则用 pi 默认模型
-- 自动加载 **TDD skill**（`--skill`）让每轮迭代遵循 red-green-refactor：默认取
-  全局 skills 目录（与 `ralph/` 同层级的 `skills/tdd`），可用 `RALPH_SKILL`
-  环境变量覆盖指定其他 skill 目录
-- `prompt.zh.md` 可自由编辑（任务拆解、反馈循环、提交规范等都在里面）
+- `RALPH_MODEL` 指定子进程模型（如 `anthropic/claude-sonnet-4`），不设置则用 pi 默认模型
+- `RALPH_LOG=<file>` 把每轮最终文本追加到日志（容器化时相对路径落在 /workspace，即宿主当前目录）
+- 容器化时 `RALPH_SKILL` 默认 `/root/.pi/agent/skills/tdd`（挂载自 `~/Projects/afk-shared/skills/tdd`），
+  更新技能 = 改宿主目录，无需重建镜像
 
 ## 提交规范
 
