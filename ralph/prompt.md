@@ -22,7 +22,7 @@
 
 # 执行
 
-完成任务。
+使用 `tdd` skill 来完成任务。
 
 如果任何因素阻碍你完成任务，输出 <promise>ABORT</promise>。
 

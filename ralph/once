@@ -12,16 +12,51 @@ set -euo pipefail
 #   2 = 本轮正常结束，还有任务（afk 据此继续循环）
 #   3 = 用法/参数/环境错误
 #
-# 依赖: pi（在 PATH 中）、jq、git
+# 依赖: pi（在 PATH 中）、jq、git、python3
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 PROMPT_FILE="$SCRIPT_DIR/prompt.md"
 
 # jq 过滤器：从 pi 的 json 流中提取 assistant 流式文本
-stream_text='select(.type == "message_update") | .assistantMessageEvent | select(.type == "text_delta") | .delta | gsub("\n"; "\r\n") | . + "\r\n\n"'
+# 直接拼接增量 delta（无附加分隔符）——delta 是文本流的连续切片，拼起来即完整原文，
+# 终端实时滚动；重定向/tee 到文件也得到干净可读文本（不再每词一行）
+stream_text='select(.type == "message_update") | .assistantMessageEvent | select(.type == "text_delta") | .delta'
 
 # jq 过滤器：提取所有 assistant 消息的最终文本（用于检测 promise）
 final_text='select(.type == "message_end") | select(.message.role == "assistant") | .message.content[]? | select(.type == "text") | .text'
+
+# 词级软换行（流式）：模型流式输出常无换行符，直接拼接会挤成一行；
+# 这里按空格在 RALPH_WRAP 列（默认 100）处折行，文本自带换行则原样保留。
+# os.read 有多少读多少（真流式），UTF-8 增量解码避免字节边界切碎中文。
+wrap_stream() {
+  python3 -u -c '
+import os, sys, codecs
+try:
+    W = int(os.environ.get("RALPH_WRAP", "100"))
+except ValueError:
+    W = 100
+decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+buf = ""
+def emit(s):
+    sys.stdout.write(s); sys.stdout.flush()
+while True:
+    chunk = os.read(0, 8192)
+    if not chunk: break
+    buf += decoder.decode(chunk)
+    while True:
+        nl = buf.find("\n")
+        if nl != -1 and nl < W:
+            emit(buf[:nl].rstrip("\r") + "\n"); buf = buf[nl+1:]; continue
+        if len(buf) > W:
+            seg = buf[:W]
+            i = seg.rfind(" ")
+            i = i if i > 0 else W - 1
+            emit(buf[:i+1].rstrip() + "\n"); buf = buf[i+1:]; continue
+        break
+if buf:
+    emit(buf)
+'
+}
 
 # 解析参数：所有参数都视为文档路径（once 不需要迭代数）
 if [ "$#" -lt 2 ]; then
@@ -53,7 +88,7 @@ tdd_skill="${RALPH_SKILL:-$SCRIPT_DIR/../skills/tdd}"
 if [ -d "$tdd_skill" ] || [ -f "$tdd_skill" ]; then
   pi_args+=(--skill "$tdd_skill")
 else
-  echo "警告: TDD skill 未找到: $tdd_skill（可用 RALPH_SKILL 环境变量指定）" >&2
+  echo "警告: TDD skill 未找到: ${tdd_skill}（可用 RALPH_SKILL 环境变量指定）" >&2
 fi
 
 if [ -n "${RALPH_MODEL:-}" ]; then
@@ -69,9 +104,18 @@ echo "----- Ralph once -----"
 pi "${pi_args[@]}" |
   grep --line-buffered '^{' |
   tee "$tmpfile" |
-  jq --unbuffered -rj "$stream_text"
+  jq --unbuffered -rj "$stream_text" |
+  wrap_stream
 
 result=$(jq -r "$final_text" "$tmpfile")
+
+# 可选：把每轮最终完整文本追加到 RALPH_LOG 指定的日志文件（非流式，尾部不丢）
+# 示例: RALPH_LOG=ralph.log ./afk prd.md plan.md 10
+if [ -n "${RALPH_LOG:-}" ]; then
+  echo "===== $(date '+%F %T') ====" >> "$RALPH_LOG"
+  echo "$result" >> "$RALPH_LOG"
+  echo >> "$RALPH_LOG"
+fi
 
 if [[ "$result" == *"<promise>NO MORE TASKS</promise>"* ]]; then
   echo
