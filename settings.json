@@ -1,17 +1,15 @@
 {
-  "lastChangelogVersion": "0.83.0",
+  "lastChangelogVersion": "0.84.1",
   "theme": "dark",
-  "defaultProvider": "xiaomi-token-plan-cn",
-  "defaultModel": "mimo-v2.5-pro",
+  "defaultProvider": "deepseek",
+  "defaultModel": "deepseek-v4-flash",
   "packages": [
     "npm:pi-web-access",
-    "npm:pi-lens",
     "npm:@gotgenes/pi-permission-system",
-    "npm:pi-mcp-adapter",
     "npm:pi-rewind",
     "npm:pi-gen-license",
     "npm:@tintinweb/pi-subagents",
-    "npm:pi-lite-footer"
+    "npm:pi-deepseek-cost"
   ],
   "defaultThinkingLevel": "high",
   "clearOnStart": true,
@@ -27,7 +25,8 @@
     "disabled": false
   },
   "quietStartup": true,
-  "pi-spin-color": {
-    "color": "rainbow"
+  "deepseekCost": {
+    "peakPricing": false,
+    "locale": "zh"
   }
 }
