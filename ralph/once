@@ -1,0 +1,88 @@
+#!/bin/bash
+set -euo pipefail
+
+# once —— Ralph 工作流：单轮执行一个任务
+#
+# 用法: once <文档1> <文档2> [...]
+#   两个文档顺序可变（如 PRD 与 PLAN），全部作为上下文传入子进程。
+#
+# 退出码:
+#   0 = 无更多任务 (NO MORE TASKS)
+#   1 = 中止 (ABORT)
+#   2 = 本轮正常结束，还有任务（afk 据此继续循环）
+#   3 = 用法/参数/环境错误
+#
+# 依赖: pi（在 PATH 中）、jq、git
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+PROMPT_FILE="$SCRIPT_DIR/prompt.md"
+
+# jq 过滤器：从 pi 的 json 流中提取 assistant 流式文本
+stream_text='select(.type == "message_update") | .assistantMessageEvent | select(.type == "text_delta") | .delta | gsub("\n"; "\r\n") | . + "\r\n\n"'
+
+# jq 过滤器：提取所有 assistant 消息的最终文本（用于检测 promise）
+final_text='select(.type == "message_end") | select(.message.role == "assistant") | .message.content[]? | select(.type == "text") | .text'
+
+# 解析参数：所有参数都视为文档路径（once 不需要迭代数）
+if [ "$#" -lt 2 ]; then
+  echo "用法: once <prd.md> <plan.md>  （两个文档顺序可变）" >&2
+  exit 3
+fi
+
+resolved=()
+for d in "$@"; do
+  if [ ! -f "$d" ]; then
+    echo "错误: 文件不存在: $d" >&2
+    exit 3
+  fi
+  resolved+=("$(cd "$(dirname "$d")" && pwd -P)/$(basename "$d")")
+done
+
+# 最近 10 条 Ralph 提交（SHA、日期、完整消息）——进度锚点
+ralph_commits=$(git log --grep="Ralph:" -n 10 --format="%H%n%ad%n%B---" --date=short 2>/dev/null || echo "No Ralph commits found")
+
+tmpfile=$(mktemp)
+trap 'rm -f "$tmpfile"' EXIT
+
+# 组装 pi 子进程参数（全新会话，非交互）
+pi_args=(-p --mode json --no-session -a)
+
+# TDD skill：默认取全局 skills 目录（与 ralph 目录同层级），可用 RALPH_SKILL 覆盖
+# 示例: RALPH_SKILL=/path/to/skills/tdd ./afk ...
+tdd_skill="${RALPH_SKILL:-$SCRIPT_DIR/../skills/tdd}"
+if [ -d "$tdd_skill" ] || [ -f "$tdd_skill" ]; then
+  pi_args+=(--skill "$tdd_skill")
+else
+  echo "警告: TDD skill 未找到: $tdd_skill（可用 RALPH_SKILL 环境变量指定）" >&2
+fi
+
+if [ -n "${RALPH_MODEL:-}" ]; then
+  pi_args+=(--model "$RALPH_MODEL")
+fi
+for d in "${resolved[@]}"; do
+  pi_args+=("@$d")
+done
+pi_args+=("@$PROMPT_FILE" "Previous Ralph commits: $ralph_commits")
+
+echo "----- Ralph once -----"
+
+pi "${pi_args[@]}" |
+  grep --line-buffered '^{' |
+  tee "$tmpfile" |
+  jq --unbuffered -rj "$stream_text"
+
+result=$(jq -r "$final_text" "$tmpfile")
+
+if [[ "$result" == *"<promise>NO MORE TASKS</promise>"* ]]; then
+  echo
+  echo "Ralph: NO MORE TASKS —— 所有任务完成。"
+  exit 0
+fi
+
+if [[ "$result" == *"<promise>ABORT</promise>"* ]]; then
+  echo
+  echo "Ralph: ABORT —— 本轮中止。"
+  exit 1
+fi
+
+exit 2
