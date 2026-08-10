@@ -31,6 +31,10 @@ RUN set -eux; \
   && fnm install 24 && fnm default 24 \
   && printf 'eval "$(fnm env --shell bash)"\n' > /etc/profile.d/fnm.sh
 
+# ── 工具链：pnpm（固定版本与宿主一致，容器内 `pnpm` 命令可直接使用；
+#     store-dir 由容器创建时通过 pnpm_config_store_dir 注入，勿写入镜像）──
+RUN npm install -g --ignore-scripts pnpm@11.21.0
+
 # ── 工具链：playwright + chromium（E2E / 截图视觉回归）──
 RUN npm install -g playwright \
   && playwright install --with-deps chromium

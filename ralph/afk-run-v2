@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-# afk-run — containerized ralph/afk: use the current directory as the
-# project container and run the ralph loop inside it.
+# afk-run-v2 — containerized ralph/afk（issue 模式）: use the current directory
+# as the project container and run the ralph issue loop inside it.
 #
 # Usage:
-#   afk-run <prd.md> <plan.md> <iterations>   run ralph afk loop in container
-#   afk-run                                    no args: interactive mode (pi)
+#   afk-run-v2 <iterations>   run ralph afk loop in container (issue mode)
+#   afk-run-v2                no args: interactive mode (pi)
+#
+# Issue 模式: 脚本不再接收 PRD/Plan 文档。afk 每轮自动拉取当前仓库
+# `--label afk` 的开放 issues（gh issue list），编号升序取一条交给 agent。
 #
 # Behavior:
 #   - project identity = git remote origin repo name (fallback: dir name) -> <name>-afk

@@ -5,7 +5,6 @@
   "defaultModel": "deepseek-v4-flash",
   "packages": [
     "npm:pi-web-access",
-    "npm:@gotgenes/pi-permission-system",
     "npm:pi-rewind",
     "npm:pi-gen-license",
     "npm:@tintinweb/pi-subagents",
