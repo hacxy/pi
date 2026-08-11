@@ -14,6 +14,8 @@ disable-model-invocation: true
 
 基于对话里已有的内容干活。如果用户传了引用（规格路径、issue 编号或 URL），就抓取并读完整正文和评论。
 
+如果是飞书文档URL，则使用: `lark-cli docs +fetch --doc "$URL" --doc-format markdown` 获取文档内容
+
 ### 2. 探索代码库（可选）
 
 如果还没探索过代码库，先看看当前代码状态。工单标题和描述要用项目的领域术语，并尊重所在区域的 ADR。
@@ -53,7 +55,7 @@ disable-model-invocation: true
 
 ### 5. 发布到Github Issues
 
-按依赖顺序逐个发布（被依赖的先发），这样阻塞边能引用真实 ID。平台有原生阻塞/子 issue 关系就用它；没有就把每个工单的"阻塞于"写成阻塞它的 issue。除非另有指示，否则请使用 ready-for-agent 分类标签来标记这些任务——因为这些任务本质上是由代理来处理的。
+按依赖顺序逐个发布（被依赖的先发），这样阻塞边能引用真实 ID。平台有原生阻塞/子 issue 关系就用它；没有就把每个工单的"阻塞于"写成阻塞它的 issue。除非另有指示，否则请使用 ready-for-agent 分类标签来标记这些任务——因为这些任务本质上是由 agent 来处理的。
 
 **推进就绪工单**：凡是阻塞项全部完成的工单，就是现在该做的。纯线性依赖链的话，自然就是从前往后逐个做。
 
@@ -76,20 +78,20 @@ disable-model-invocation: true
 
 <issue-template>
 
-## 父 issue（Parent）
+## 父 issue
 
-追踪器上父 issue 的引用（来源是既有 issue 才写，否则省略本节）。
+父 issue 的引用（来源是既有 issue 才写，否则省略本节）。
 
-## 要构建什么（What to build）
+## 要构建什么
 
 这个工单做完后能用的端到端行为，从用户视角写——不是逐层实现。
 
-## 验收标准（Acceptance criteria）
+## 验收标准
 
 - [ ] 标准 1
 - [ ] 标准 2
 
-## 阻塞于（Blocked by）
+## 阻塞于
 
 - 每个阻塞工单的引用，或"无——可以直接开工"。
 
