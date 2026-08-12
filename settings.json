@@ -4,11 +4,11 @@
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-v4-flash",
   "packages": [
-    "npm:pi-web-access",
     "npm:pi-rewind",
     "npm:pi-gen-license",
     "npm:@tintinweb/pi-subagents",
-    "npm:pi-deepseek-cost"
+    "npm:pi-deepseek-cost",
+    "npm:pi-deepseek-search"
   ],
   "defaultThinkingLevel": "high",
   "clearOnStart": true,
