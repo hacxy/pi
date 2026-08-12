@@ -4,4 +4,4 @@ description: 一场持续的访谈，旨在完善计划或设计。
 disable-model-invocation: true
 ---
 
-运行一个 `/grilling` 会话。
+使用 `/grilling` skill 运行一个会话。
