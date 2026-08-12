@@ -1,6 +1,6 @@
 ---
 name: write-a-prd
-description: 把当前对话转化为 PRD ，然后作为 GitHub issue 提交。当用户想要编写 PRD、创建产品需求文档或规划新功能时使用。
+description: 把当前对话转化为 PRD ，然后创建飞书文档。当用户想要编写 PRD、创建产品需求文档或规划新功能时使用。
 disable-model-invocation: true
 ---
 
@@ -10,7 +10,9 @@ disable-model-invocation: true
 
 2. 勾画出你将要测试该功能的接缝（seams）。现有接缝应优先于新接缝。使用尽可能高的接缝。如果需要新接缝，在你能做到的最高点提出它们。整个代码库中的接缝越少越好——理想数量是一个。与用户确认这些接缝符合他们的预期。
 
-3. 使用下面的模板编写 PRD，然后提交到 Github issue
+3. 使用下面的模板编写 PRD，然后创建飞书文档
+
+创建方式：[lark-doc](./lark-doc.md)
 
 <prd-template>
 
