@@ -130,7 +130,16 @@ grep -qF '.pi/feishu.json' AGENTS.md 2>/dev/null || \
 
 ## 6. 事实与坑
 
-- `drive +search` 的 folder 结果**没有 `name` 字段**，标题在 `title_highlighted` 里；也没有「名称精确匹配」参数，得自己比对。`--only-title` 能大幅减少噪音。
+以下结论按 **lark-cli 1.0.100** 实测，版本跨越较大时先复核一遍。
+- `drive +search` 的结果在 `data.results[]`，身份字段在 `result_meta` 下（`token` / `url` / `doc_types`）；**没有 `name` 字段**，标题只在 `title_highlighted` 里且带 `<h>` 高亮标签，也没有「名称精确匹配」参数，得自己去掉标签再比对：
+
+  ```bash
+  lark-cli drive +search --query "<项目名>" --doc-types folder \
+    --folder-tokens "KoVnf8XE9lHHFed7OL0cV8rGnBd" --only-title --as user --format json \
+    | jq -r '.data.results[]? | [.result_meta.token, (.title_highlighted|gsub("</?h>";""))] | @tsv'
+  ```
+
+  `--only-title` 能大幅减少噪音。
 - `drive files list` 只按 `--folder-token` 列目录，**不支持按名称过滤**。按名字找东西用 `+search`。
 - `drive +inspect --url <url>` → `{title, token, type, url}`，一个命令认全文档/文件夹/Base。批量核验用 `drive metas batch_query --data '{"request_docs":[{"doc_token":"...","doc_type":"docx"}],"with_url":true}'`。
 - `docs +create --parent-token` 只认 `folder` 类型 token。Base（bitable）要在里面建表不是这个命令的事。

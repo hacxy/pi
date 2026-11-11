@@ -204,6 +204,6 @@ lark-cli base +record-batch-update --as user --base-token <bt> --table-id <tid> 
 - 判断「阻塞已解除」必须把 `已完成` 和 `已废弃` 都算作解除。只算 `已完成` 时，一张工单被废弃会让下游永远卡在阻塞。
 - **表名与字段名不能重名**：表叫「工单」时，正文字段就必须叫「标题」而不是「工单」，否则公式里的名字失义。改字段名会让引用它的公式失效。
 - `+record-batch-create` 的 body 是 `{"create_records":[...]}`；`+record-batch-update` 的 body 是 `{"update_records":[{"record_id":...,"fields":{...}}]}`。
-- `+record-list` 默认输出 markdown；要 JSON 得 `--format json`，而 `--jq` 与 `--format markdown` 互斥。
+- `+record-list` 自 1.0.98 起默认输出 **ndjson**（落一个 `.ndjson` 文件 + manifest，`--limit` 默认 2000），不再是 markdown；要内联 JSON 用 `--format json`（其 `--limit` 上限只有 200）。`--jq` 与 `--format markdown` 互斥。以上按 lark-cli 1.0.100 实测。
 - 有些命令的 `--json` 是布尔（`--format json` 的简写），给它传值会报 `flag needs an argument: --json`。建视图/字段/记录时用 `--json '<body>'`。
 - `drive +delete` 是 high-risk-write，要用户确认后才加 `--yes`。**这个 skill 不删工单、不删 Base。**
