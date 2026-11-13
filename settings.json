@@ -8,5 +8,8 @@
     "npm:@tintinweb/pi-subagents",
     "npm:pi-deepseek-search"
   ],
-  "defaultThinkingLevel": "high"
+  "defaultThinkingLevel": "high",
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:@tintinweb/pi-subagents\",\"scope\":\"user\"}": "0.23.2"
+  }
 }
