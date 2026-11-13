@@ -184,13 +184,25 @@ lark-cli base +record-batch-update --as user --base-token <bt> --table-id <tid> 
 
 一个工单有多个阻塞者时，把它们放进同一个数组。重跑时阻塞边**会被覆盖**，这是有意的——阻塞边属于拆分方案，人不会在表里手改它。
 
+#### 将bot加入为这个看板的协作者
+
+使用 lark-cli 的 drive +member-add命令，以 user 身份（你）执行：
+
+```bash
+  lark-cli drive +member-add \
+    --token {token} --type bitable \
+    --member-type openid \
+    --member-id {id} \
+    --perm view --as user --yes
+```
+
 #### 5.6 汇报
 
 给用户：Base URL、每张工单的 `编号 → 标题 → 阻塞于`，并明确点出**就绪**的那几张。
 
 **推进就绪工单**：凡是阻塞项全部完成的工单，就是现在该做的。纯线性依赖链的话，自然就是从前往后逐个做。
 
-不要关闭或修改任何父 issue——飞书侧对应的是不要改动来源文档。
+不要改动来源文档。
 
 ## lark-cli 事实与坑
 
