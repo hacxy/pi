@@ -6,28 +6,7 @@
   "packages": [
     "npm:pi-rewind",
     "npm:@tintinweb/pi-subagents",
-    "npm:pi-deepseek-cost",
     "npm:pi-deepseek-search"
   ],
-  "defaultThinkingLevel": "high",
-  "clearOnStart": true,
-  "ccHeader": {
-    "color": "a",
-    "ver": 1,
-    "grad": true,
-    "lines": false,
-    "speed": 50,
-    "slogan": "Code something that makes you proud",
-    "sloganOn": true,
-    "sloganColor": true,
-    "disabled": false
-  },
-  "quietStartup": true,
-  "deepseekCost": {
-    "peakPricing": false,
-    "locale": "zh"
-  },
-  "extensionChangelogVersions": {
-    "{\"source\":\"npm:@tintinweb/pi-subagents\",\"scope\":\"user\"}": "0.24.0"
-  }
+  "defaultThinkingLevel": "high"
 }
