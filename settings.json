@@ -1,5 +1,6 @@
 {
   "lastChangelogVersion": "1.5.2",
+  "quietStartup": true,
   "theme": "dark",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-flash",
@@ -10,6 +11,6 @@
   ],
   "defaultThinkingLevel": "high",
   "extensionChangelogVersions": {
-    "{\"source\":\"npm:@tintinweb/pi-subagents\",\"scope\":\"user\"}": "0.23.2"
+    "{\"source\":\"npm:@tintinweb/pi-subagents\",\"scope\":\"user\"}": "0.25.0"
   }
 }

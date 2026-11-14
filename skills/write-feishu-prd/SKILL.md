@@ -1,5 +1,5 @@
 ---
-name: write-a-prd
+name: write-feishu-prd
 description: 把当前对话转化为 PRD ，然后创建飞书文档。当用户想要编写 PRD、创建产品需求文档或规划新功能时使用。
 disable-model-invocation: true
 ---
