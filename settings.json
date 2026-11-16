@@ -7,10 +7,12 @@
   "packages": [
     "npm:pi-rewind",
     "npm:@tintinweb/pi-subagents",
-    "npm:pi-deepseek-search"
+    "npm:pi-deepseek-search",
+    "npm:pi-context-view"
   ],
   "defaultThinkingLevel": "high",
   "extensionChangelogVersions": {
-    "{\"source\":\"npm:@tintinweb/pi-subagents\",\"scope\":\"user\"}": "0.25.0"
+    "{\"source\":\"npm:@tintinweb/pi-subagents\",\"scope\":\"user\"}": "0.25.0",
+    "{\"source\":\"npm:pi-context-view\",\"scope\":\"user\"}": "0.8.4"
   }
 }
